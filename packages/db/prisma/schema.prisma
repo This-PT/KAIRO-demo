@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  url      = env("DATABASE_URL")
+  provider = "postgresql"
+}
+
+enum Visibility {
+  readable
+  restricted
+}
+
+enum SummaryStatus {
+  ok
+  rejected
+  skipped_restricted
+}
+
+model Connection {
+  id        String    @id @default(cuid())
+  type      String    @default("jira")
+  baseUrl   String
+  status    String    @default("unknown")
+  createdAt DateTime  @default(now())
+  projects  Project[]
+}
+
+model Project {
+  id           String       @id @default(cuid())
+  key          String       @unique
+  name         String
+  enabled      Boolean      @default(false)
+  connection   Connection   @relation(fields: [connectionId], references: [id])
+  connectionId String
+  rules        PolicyRule[]
+  tickets      Ticket[]
+  runs         IngestRun[]
+}
+
+model PolicyRule {
+  id         String     @id @default(cuid())
+  project    Project    @relation(fields: [projectId], references: [id])
+  projectId  String
+  label      String?
+  visibility Visibility
+  priority   Int        @default(0)
+}
+
+model Ticket {
+  id              String         @id @default(cuid())
+  key             String         @unique
+  project         Project        @relation(fields: [projectId], references: [id])
+  projectId       String
+  url             String
+  title           String
+  status          String
+  visibility      Visibility
+  sourceUpdatedAt DateTime
+  contentHash     String
+  issueType       String         @default("Task")
+  parentKey       String?
+  assignee        String?
+  labels          String[]       @default([])
+  content         TicketContent?
+  summaries       Summary[]
+  auditLogs       AuditLog[]
+  redactions      RedactionEvent[]
+  linksFrom       TicketLink[]   @relation("from")
+
+  @@index([parentKey])
+}
+
+model TicketContent {
+  ticketId      String  @id
+  ticket        Ticket  @relation(fields: [ticketId], references: [id])
+  redactedText  String? // readable tickets only
+  rawEncrypted  Bytes? // restricted tickets only (AES-256-GCM)
+  structured    Json? // comments / changelog / links, redacted
+}
+
+model TicketLink {
+  id        String @id @default(cuid())
+  from      Ticket @relation("from", fields: [fromId], references: [id])
+  fromId    String
+  toKey     String
+  type      String
+}
+
+model RedactionEvent {
+  id       String @id @default(cuid())
+  ticket   Ticket @relation(fields: [ticketId], references: [id])
+  ticketId String
+  type     String // api_key | password | token | email
+  count    Int
+}
+
+model Summary {
+  id               String        @id @default(cuid())
+  ticket           Ticket        @relation(fields: [ticketId], references: [id])
+  ticketId         String
+  json             Json
+  confidence       String
+  model            String
+  promptVersion    String
+  evidenceVerified Boolean
+  status           SummaryStatus
+  attempts         Int           @default(1)
+  // Plain text the full-text index searches (title + summary fields). Readable tickets only.
+  searchText       String        @default("")
+  createdAt        DateTime      @default(now())
+}
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  // Summaries are about one ticket; chat questions involve several, so the ticket is optional and the keys are listed.
+  ticket          Ticket?  @relation(fields: [ticketId], references: [id])
+  ticketId        String?
+  kind            String   @default("summary")
+  ticketKeys      String[] @default([])
+  sentAt          DateTime @default(now())
+  provider        String
+  model           String
+  payloadHash     String
+  payloadSnapshot String // redacted text that was sent
+  bytes           Int
+  outcome         String   @default("pending")
+}
+
+model IngestRun {
+  id        String   @id @default(cuid())
+  project   Project  @relation(fields: [projectId], references: [id])
+  projectId String
+  status    String   @default("running")
+  cursor    String?
+  fetched   Int      @default(0)
+  restricted Int     @default(0)
+  error     String?
+  startedAt DateTime @default(now())
+}
+
+model ChatSession {
+  id        String        @id @default(cuid())
+  title     String
+  // Anonymous per-browser id set by the web server. Null = created through the API directly (admin).
+  ownerId   String?
+  createdAt DateTime      @default(now())
+  messages  ChatMessage[]
+
+  @@index([ownerId, createdAt])
+}
+
+model ChatMessage {
+  id         String      @id @default(cuid())
+  session    ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  sessionId  String
+  role       String // user | assistant
+  content    String
+  citations  Json? // [{ticket, quote}] verified against the source text
+  confidence String?
+  notFound   Boolean     @default(false)
+  createdAt  DateTime    @default(now())
+
+  @@index([sessionId, createdAt])
+}

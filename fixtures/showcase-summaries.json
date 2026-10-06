@@ -1,0 +1,1320 @@
+{
+ "version": 1,
+ "project": "SHOP",
+ "summaries": [
+  {
+   "key": "SHOP-1",
+   "json": {
+    "people": [
+     "Priya Nair"
+    ],
+    "ticket": "SHOP-1",
+    "actions": [
+     {
+      "what": "Scoped replacement of SQL LIKE search, ranking fixes, and handling of common typos, with child tickets tracking each piece.",
+      "source": "comment by Priya Nair"
+     },
+     {
+      "what": "Changed the epic's status from In Progress to Done.",
+      "source": "changelog by Priya Nair"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "root_cause",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "Shoppers need an easier way to find products; the scope includes ranking problems and common typos.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Make it easy for shoppers to find products."
+     },
+     {
+      "field": "problem",
+      "quote": "Scope: replace SQL LIKE search, fix ranking problems, and handle common typos."
+     },
+     {
+      "field": "actions",
+      "quote": "Scope: replace SQL LIKE search, fix ranking problems, and handle common typos. Child tickets track each piece."
+     },
+     {
+      "field": "actions",
+      "quote": "Priya Nair changed status: In Progress -> Done"
+     },
+     {
+      "field": "rationale",
+      "quote": "Make it easy for shoppers to find products."
+     }
+    ],
+    "rationale": "Make it easy for shoppers to find products.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-2",
+   "json": {
+    "people": [
+     "Priya Nair",
+     "Marcus Lee"
+    ],
+    "ticket": "SHOP-2",
+    "actions": [
+     {
+      "what": "Compared Postgres full-text search, Elasticsearch and Algolia, and chose Elasticsearch.",
+      "source": "comment by Priya Nair"
+     },
+     {
+      "what": "Documented guidance to reindex into a new index and swap the alias when mappings change.",
+      "source": "comment by Priya Nair"
+     }
+    ],
+    "gotchas": [
+     "Any mapping change requires a full reindex, taking about 40 minutes. Reindex into a new index and swap the alias to avoid search downtime."
+    ],
+    "missing": [
+     "root_cause"
+    ],
+    "problem": "Product search took over 2 seconds on the full catalogue and needed full-text search with relevance ranking.",
+    "related": [
+     "SHOP-3"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Product search used SQL LIKE queries and took over 2 seconds on the full catalogue. We need real full-text search with relevance ranking."
+     },
+     {
+      "field": "actions",
+      "quote": "Compared three options: Postgres full-text search, Elasticsearch and Algolia. Chose Elasticsearch because we need custom ranking and already run the cluster for logs."
+     },
+     {
+      "field": "actions",
+      "quote": "Always reindex into a new index and swap the alias so search never goes down."
+     },
+     {
+      "field": "rationale",
+      "quote": "Chose Elasticsearch because we need custom ranking and already run the cluster for logs."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected Algolia because per-query pricing would cost about ten times more at our traffic, and our contract requires data to stay in the EU."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We also rejected Postgres full-text search because ranking by popularity plus stock is awkward to express and it slowed down checkout queries on the same database."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: any mapping change needs a full reindex, which takes about 40 minutes. Always reindex into a new index and swap the alias so search never goes down."
+     }
+    ],
+    "rationale": "Elasticsearch supports the required custom ranking, and a cluster was already running for logs.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": [
+     {
+      "option": "Algolia",
+      "why_rejected": "Per-query pricing would cost about ten times more at their traffic, and the contract requires data to stay in the EU."
+     },
+     {
+      "option": "Postgres full-text search",
+      "why_rejected": "Ranking by popularity plus stock was awkward to express, and it slowed checkout queries on the same database."
+     }
+    ]
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-3",
+   "json": {
+    "people": [
+     "Marcus Lee"
+    ],
+    "ticket": "SHOP-3",
+    "actions": [
+     {
+      "what": "Filtered results using a live in_stock flag updated by the inventory service within seconds, and kept popularity only as a tie-breaker.",
+      "source": "comment by Marcus Lee"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "gotchas"
+    ],
+    "problem": "Search ranked out-of-stock items first, so customers saw sold-out items among the first results for popular queries.",
+    "related": [
+     "SHOP-2"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Customers complained that the first results for popular queries were sold out."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: the ranking boost read a stock snapshot that is only refreshed nightly, so items that sold out during the day kept their boost."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by filtering on a live in_stock flag that the inventory service updates within seconds, and keeping popularity only as a tie-breaker."
+     },
+     {
+      "field": "rationale",
+      "quote": "Considered refreshing the snapshot hourly but rejected it because customers would still see sold-out items for up to an hour."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "Considered refreshing the snapshot hourly but rejected it because customers would still see sold-out items for up to an hour."
+     }
+    ],
+    "rationale": "Hourly snapshot refresh was rejected because customers would still see sold-out items for up to an hour.",
+    "confidence": "high",
+    "root_cause": "The ranking boost used a stock snapshot refreshed only nightly, so items that sold out during the day retained their boost.",
+    "rejected_options": [
+     {
+      "option": "Refresh the stock snapshot hourly.",
+      "why_rejected": "Customers would still see sold-out items for up to an hour."
+     }
+    ]
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-4",
+   "json": {
+    "people": [
+     "Priya Nair"
+    ],
+    "ticket": "SHOP-4",
+    "actions": [
+     {
+      "what": "Applied synonyms at query time rather than index time.",
+      "source": "comment by Priya Nair"
+     },
+     {
+      "what": "Limited fuzziness to words with at least five letters.",
+      "source": "comment by Priya Nair"
+     }
+    ],
+    "gotchas": [
+     "Fuzziness above 1 edit returned unrelated products for short words."
+    ],
+    "missing": [
+     "root_cause"
+    ],
+    "problem": "Shoppers misspell brand names, prompting a request for synonym and fuzzy handling.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Shoppers misspell brand names. Add synonym and fuzzy handling."
+     },
+     {
+      "field": "actions",
+      "quote": "Applied synonyms at query time, not index time, so the list can change without a reindex."
+     },
+     {
+      "field": "actions",
+      "quote": "Gotcha: fuzziness above 1 edit returned unrelated products for short words, so we limit it to words with at least five letters."
+     },
+     {
+      "field": "rationale",
+      "quote": "Applied synonyms at query time, not index time, so the list can change without a reindex."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "Applied synonyms at query time, not index time, so the list can change without a reindex."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: fuzziness above 1 edit returned unrelated products for short words, so we limit it to words with at least five letters."
+     }
+    ],
+    "rationale": "Query-time synonyms allow the synonym list to change without a reindex.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": [
+     {
+      "option": "Applying synonyms at index time.",
+      "why_rejected": "Query-time application allows the list to change without a reindex."
+     }
+    ]
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-5",
+   "json": {
+    "people": [
+     "Tom Becker"
+    ],
+    "ticket": "SHOP-5",
+    "actions": [
+     {
+      "what": "Grouped the Apple Pay launch and payment bugs found during the Black Friday review into this epic.",
+      "source": "comment by Tom Becker"
+     },
+     {
+      "what": "Changed the epic's status from In Progress to Done.",
+      "source": "changelog by Tom Becker"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "root_cause",
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "The epic targets reliable and secure payments, new wallets, fewer failed charges, and correct refunds.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Reliable and secure payments: new wallets, fewer failed charges, correct refunds."
+     },
+     {
+      "field": "actions",
+      "quote": "This epic groups the Apple Pay launch and the payment bugs found during the Black Friday review."
+     },
+     {
+      "field": "actions",
+      "quote": "Tom Becker changed status: In Progress -> Done"
+     }
+    ],
+    "rationale": "",
+    "confidence": "low",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "low",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-6",
+   "json": {
+    "people": [
+     "Tom Becker"
+    ],
+    "ticket": "SHOP-6",
+    "actions": [
+     {
+      "what": "Add Apple Pay using the payment provider.",
+      "source": "description"
+     },
+     {
+      "what": "Use the provider's hosted payment sheet instead of integrating Apple's API directly.",
+      "source": "comment by Tom Becker"
+     }
+    ],
+    "gotchas": [
+     "The domain verification file must be served from the site root without redirects, or Apple Pay silently fails to appear.",
+     "Sandbox and production use different merchant IDs."
+    ],
+    "missing": [
+     "root_cause"
+    ],
+    "problem": "Customers on iPhones expect Apple Pay at checkout.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Customers on iPhones expect Apple Pay at checkout."
+     },
+     {
+      "field": "actions",
+      "quote": "Add it using our payment provider."
+     },
+     {
+      "field": "actions",
+      "quote": "Use the provider's hosted payment sheet instead of integrating Apple's API directly, so card data never touches our servers and PCI scope stays small."
+     },
+     {
+      "field": "rationale",
+      "quote": "so card data never touches our servers and PCI scope stays small."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected building directly on Apple's API because it needs our own merchant certificate management and adds months of compliance work."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: the domain verification file must be served from the site root with no redirects, or Apple Pay silently fails to appear. Sandbox and production use different merchant IDs."
+     }
+    ],
+    "rationale": "Keep card data off the team's servers and keep PCI scope small.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": [
+     {
+      "option": "Build directly on Apple's API.",
+      "why_rejected": "It requires the team's own merchant certificate management and adds months of compliance work."
+     }
+    ]
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-7",
+   "json": {
+    "people": [
+     "Tom Becker",
+     "Elena Rossi"
+    ],
+    "ticket": "SHOP-7",
+    "actions": [
+     {
+      "what": "Generated an idempotency key on the server for each cart and sent it with every payment attempt.",
+      "source": "comment by Tom Becker"
+     }
+    ],
+    "gotchas": [
+     "The key must be tied to the cart contents. If the cart changes, create a new key; otherwise the provider rejects the changed amount."
+    ],
+    "missing": [],
+    "problem": "Several customers were charged twice for one order, mostly on mobile connections.",
+    "related": [
+     "SHOP-20"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Several customers were charged twice for one order, mostly on mobile connections."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: the app retried the payment request after a timeout without an idempotency key, so the provider processed both requests."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by generating an idempotency key on the server for each cart and sending it with every payment attempt, so a retry returns the first result."
+     },
+     {
+      "field": "rationale",
+      "quote": "so a retry returns the first result."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "Disabling the pay button after the first tap was suggested but we rejected it as the only fix because the mobile app also retries in the background."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: the key must be tied to the cart contents. If the cart changes, create a new key, otherwise the provider rejects the changed amount."
+     }
+    ],
+    "rationale": "Using the same idempotency key for every payment attempt makes a retry return the first result.",
+    "confidence": "high",
+    "root_cause": "The app retried payment requests after a timeout without an idempotency key, so the provider processed both requests.",
+    "rejected_options": [
+     {
+      "option": "Disabling the pay button after the first tap as the only fix.",
+      "why_rejected": "The mobile app also retries in the background."
+     }
+    ]
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-8",
+   "json": {
+    "people": [
+     "Elena Rossi"
+    ],
+    "ticket": "SHOP-8",
+    "actions": [
+     {
+      "what": "Stored the presentment currency on the order and used it for refunds and emails.",
+      "source": "comment by Elena Rossi"
+     }
+    ],
+    "gotchas": [
+     "Yen has no decimal places; amounts must not be multiplied by 100 for zero-decimal currencies."
+    ],
+    "missing": [
+     "rationale",
+     "rejected_options"
+    ],
+    "problem": "A customer paying in yen received a refund email quoting the amount in euros.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "A customer paying in yen saw the refund email quote the amount in euros."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: refunds used the settlement currency of our account instead of the currency the customer paid in."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by storing the presentment currency on the order and using it for refunds and emails."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: yen has no decimal places, so amounts must not be multiplied by 100 for zero-decimal currencies."
+     }
+    ],
+    "rationale": "",
+    "confidence": "high",
+    "root_cause": "Refunds used the account's settlement currency instead of the currency the customer paid in.",
+    "rejected_options": []
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-9",
+   "json": {
+    "people": [
+     "Tom Becker"
+    ],
+    "ticket": "SHOP-9",
+    "actions": [
+     {
+      "what": "Rotated the exposed key and redeployed.",
+      "source": "comment by Tom Becker"
+     },
+     {
+      "what": "Requested removal of the exposed key from the history; completion of that removal is not stated.",
+      "source": "description"
+     },
+     {
+      "what": "Changed the temporary admin password.",
+      "source": "comment by Tom Becker"
+     },
+     {
+      "what": "Decided to store provider keys only in the secrets manager and block commits containing strings starting with sk_live.",
+      "source": "comment by Tom Becker"
+     }
+    ],
+    "gotchas": [
+     "The comment also mentions a temporary admin password, whose value is redacted, and confirms that it has been changed."
+    ],
+    "missing": [
+     "rationale",
+     "rejected_options"
+    ],
+    "problem": "A live payment API key was exposed in a debugging ticket and required immediate rotation and removal from the history.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "A live key was pasted into a debugging ticket. Rotate immediately and remove it from the history."
+     },
+     {
+      "field": "root_cause",
+      "quote": "A live key was pasted into a debugging ticket."
+     },
+     {
+      "field": "actions",
+      "quote": "Rotated the key and redeployed."
+     },
+     {
+      "field": "actions",
+      "quote": "Rotate immediately and remove it from the history."
+     },
+     {
+      "field": "actions",
+      "quote": "Temporary admin password was password=[REDACTED:password] and has been changed."
+     },
+     {
+      "field": "actions",
+      "quote": "We decided to store provider keys only in the secrets manager from now on and block commits that contain strings starting with sk_live."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Temporary admin password was password=[REDACTED:password] and has been changed."
+     }
+    ],
+    "rationale": "",
+    "confidence": "high",
+    "root_cause": "The live key was pasted into a debugging ticket.",
+    "rejected_options": []
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-10",
+   "json": {
+    "people": [
+     "Aisha Khan"
+    ],
+    "ticket": "SHOP-10",
+    "actions": [],
+    "gotchas": [
+     "This is an umbrella epic collecting platform improvements from the first half of the year. It is marked Done, but no specific implementation actions are documented."
+    ],
+    "missing": [
+     "root_cause",
+     "actions",
+     "rationale",
+     "rejected_options"
+    ],
+    "problem": "Improve platform stability and developer experience across flags, logging, CI speed, and flaky tests.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Make the platform stable and pleasant to work on: flags, logging, CI speed and fewer flaky tests."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Labels: epic, platform"
+     },
+     {
+      "field": "gotchas",
+      "quote": "Collects the platform improvements from the first half of the year."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Status: Done"
+     }
+    ],
+    "rationale": "",
+    "confidence": "low",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "low",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-11",
+   "json": {
+    "people": [
+     "Aisha Khan"
+    ],
+    "ticket": "SHOP-11",
+    "actions": [
+     {
+      "what": "Chose a self-hosted open source flag service.",
+      "source": "comment by Aisha Khan"
+     },
+     {
+      "what": "Required every flag to have an owner and a removal date in the ticket.",
+      "source": "comment by Aisha Khan"
+     }
+    ],
+    "gotchas": [
+     "Old flags pile up; every flag needs an owner and a removal date in the ticket, otherwise nobody deletes them."
+    ],
+    "missing": [
+     "root_cause"
+    ],
+    "problem": "Need to ship code behind flags and turn features on gradually.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "We want to ship code behind flags and turn features on gradually."
+     },
+     {
+      "field": "actions",
+      "quote": "Chose a self-hosted open source flag service because it works offline for local development and avoids a per-seat subscription."
+     },
+     {
+      "field": "actions",
+      "quote": "Every flag now needs an owner and a removal date in the ticket, otherwise nobody deletes them."
+     },
+     {
+      "field": "rationale",
+      "quote": "Chose a self-hosted open source flag service because it works offline for local development and avoids a per-seat subscription."
+     },
+     {
+      "field": "rationale",
+      "quote": "Every flag now needs an owner and a removal date in the ticket, otherwise nobody deletes them."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected plain environment variables because changing one needs a redeploy and gives no audit trail of who turned a feature on."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: old flags pile up. Every flag now needs an owner and a removal date in the ticket, otherwise nobody deletes them."
+     }
+    ],
+    "rationale": "The chosen service works offline for local development and avoids a per-seat subscription. Flag ownership and removal dates address old flags piling up without anyone deleting them.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": [
+     {
+      "option": "Plain environment variables",
+      "why_rejected": "Changing one needs a redeploy and provides no audit trail of who turned a feature on."
+     }
+    ]
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-12",
+   "json": {
+    "people": [
+     "Marcus Lee"
+    ],
+    "ticket": "SHOP-12",
+    "actions": [
+     {
+      "what": "Reused a small pool of image processing instances and released them after each resize.",
+      "source": "comment by Marcus Lee"
+     }
+    ],
+    "gotchas": [
+     "The container memory limit is 512Mi, and the leak only showed up after about six hours. Test long runs, not just single requests."
+    ],
+    "missing": [
+     "rationale",
+     "rejected_options"
+    ],
+    "problem": "The image resizer restarted every few hours with out-of-memory errors.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "The image resizer restarted every few hours with out-of-memory errors."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: every request created a new image processing instance and never released it."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by reusing a small pool of instances and releasing them after each resize."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: the container memory limit is 512Mi, so the leak only showed up after about six hours. Test long runs, not just single requests."
+     }
+    ],
+    "rationale": "",
+    "confidence": "high",
+    "root_cause": "Every request created a new image processing instance and never released it.",
+    "rejected_options": []
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-13",
+   "json": {
+    "people": [
+     "Aisha Khan"
+    ],
+    "ticket": "SHOP-13",
+    "actions": [
+     {
+      "what": "Moved CI to runners with eight cores, reducing build time from 22 to 9 minutes.",
+      "source": "comment by Aisha Khan"
+     }
+    ],
+    "gotchas": [
+     "The dependency cache key must include the lockfile hash; otherwise stale packages are reused and builds pass locally but fail in production."
+    ],
+    "missing": [
+     "rationale"
+    ],
+    "problem": "Builds took 22 minutes and slowed everyone down.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Builds took 22 minutes and slowed everyone down."
+     },
+     {
+      "field": "root_cause",
+      "quote": "most of the time was spent compiling, which caching does not help."
+     },
+     {
+      "field": "actions",
+      "quote": "Moved to runners with eight cores. Build time dropped from 22 to 9 minutes."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected only adding more caching because most of the time was spent compiling, which caching does not help."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: the dependency cache key must include the lockfile hash, otherwise stale packages are reused and builds pass locally but fail in production."
+     }
+    ],
+    "rationale": "",
+    "confidence": "high",
+    "root_cause": "Most of the build time was spent compiling.",
+    "rejected_options": [
+     {
+      "option": "Only adding more caching.",
+      "why_rejected": "Most of the time was spent compiling, which caching does not help."
+     }
+    ]
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-14",
+   "json": {
+    "people": [
+     "Elena Rossi"
+    ],
+    "ticket": "SHOP-14",
+    "actions": [
+     {
+      "what": "Wait until the cart request finishes and the animation ends before clicking.",
+      "source": "comment by Elena Rossi"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "rationale",
+     "gotchas"
+    ],
+    "problem": "The cart page end-to-end test failed about one run in ten with no code change.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "The cart page end-to-end test failed about one run in ten with no code change."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: the test clicked the quantity button while the page animation was still running, so the click sometimes missed."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by waiting until the cart request finishes and the animation ends before clicking."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected retrying the test three times because it would hide real race conditions in the product."
+     }
+    ],
+    "rationale": "",
+    "confidence": "high",
+    "root_cause": "The test clicked the quantity button while the page animation was still running, so the click sometimes missed.",
+    "rejected_options": [
+     {
+      "option": "Retrying the test three times.",
+      "why_rejected": "It would hide real race conditions in the product."
+     }
+    ]
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-15",
+   "json": {
+    "people": [
+     "Aisha Khan"
+    ],
+    "ticket": "SHOP-15",
+    "actions": [
+     {
+      "what": "Switched to JSON logs with a request id on every line.",
+      "source": "comment by Aisha Khan"
+     },
+     {
+      "what": "Added a redaction step that removes emails and tokens before logs are written.",
+      "source": "comment by Aisha Khan"
+     }
+    ],
+    "gotchas": [
+     "Personal data was ending up in logs; emails and tokens are now removed before logs are written."
+    ],
+    "missing": [
+     "root_cause",
+     "rejected_options"
+    ],
+    "problem": "Logs were plain text and impossible to follow across services.",
+    "related": [
+     "SHOP-9"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Logs were plain text and impossible to follow across services."
+     },
+     {
+      "field": "actions",
+      "quote": "Switched to JSON logs with a request id on every line, so one customer request can be followed across services."
+     },
+     {
+      "field": "actions",
+      "quote": "A redaction step now removes emails and tokens before logs are written."
+     },
+     {
+      "field": "rationale",
+      "quote": "Switched to JSON logs with a request id on every line, so one customer request can be followed across services."
+     },
+     {
+      "field": "rationale",
+      "quote": "Gotcha: personal data was ending up in logs. A redaction step now removes emails and tokens before logs are written."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: personal data was ending up in logs."
+     }
+    ],
+    "rationale": "Request ids allow one customer request to be followed across services. Redaction addresses personal data ending up in logs.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-16",
+   "json": {
+    "people": [
+     "Priya Nair"
+    ],
+    "ticket": "SHOP-16",
+    "actions": [
+     {
+      "what": "Included passwordless login, a login bug fix and the GDPR export.",
+      "source": "comment by Priya Nair"
+     },
+     {
+      "what": "Changed the ticket status from In Progress to Done.",
+      "source": "changelog by Priya Nair"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "root_cause",
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "Customer accounts need safer and simpler sign-in, plus the data rights customers expect.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Safer and simpler sign-in, plus the data rights customers expect."
+     },
+     {
+      "field": "actions",
+      "quote": "Includes passwordless login, a login bug fix and the GDPR export."
+     },
+     {
+      "field": "actions",
+      "quote": "Priya Nair changed status: In Progress -> Done"
+     }
+    ],
+    "rationale": "",
+    "confidence": "low",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "low",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-17",
+   "json": {
+    "people": [
+     "Priya Nair"
+    ],
+    "ticket": "SHOP-17",
+    "actions": [
+     {
+      "what": "Chose email magic links for passwordless sign-in.",
+      "source": "comment by Priya Nair"
+     },
+     {
+      "what": "Changed the link to open a confirmation page, consuming the one-time token only when the customer presses a button.",
+      "source": "comment by Priya Nair"
+     }
+    ],
+    "gotchas": [
+     "Some corporate email scanners automatically opened links and consumed the one-time token before the customer clicked."
+    ],
+    "missing": [
+     "root_cause"
+    ],
+    "problem": "Many customers forget passwords and need a way to sign in using an emailed link.",
+    "related": [
+     "SHOP-18"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Many customers forget passwords. Let them sign in with a link sent by email."
+     },
+     {
+      "field": "actions",
+      "quote": "Chose email magic links because most customers already use email and there is no per-message cost."
+     },
+     {
+      "field": "actions",
+      "quote": "The link now opens a confirmation page and the token is only used when the customer presses a button."
+     },
+     {
+      "field": "rationale",
+      "quote": "Chose email magic links because most customers already use email and there is no per-message cost."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected SMS codes because of the cost per message and the risk of SIM-swap attacks."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: some corporate email scanners open links automatically, which used up the one-time token before the customer clicked."
+     }
+    ],
+    "rationale": "Most customers already use email, and email magic links have no per-message cost.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": [
+     {
+      "option": "SMS codes",
+      "why_rejected": "Cost per message and risk of SIM-swap attacks."
+     }
+    ]
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-18",
+   "json": {
+    "people": [
+     "Tom Becker"
+    ],
+    "ticket": "SHOP-18",
+    "actions": [
+     {
+      "what": "Stored the account id in the session instead of the email.",
+      "source": "comment by Tom Becker"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "Customers could no longer sign in after changing their email address.",
+    "related": [
+     "SHOP-17"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "After changing their email address, customers could no longer sign in."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: sessions were stored against the old email address, so the next request found no matching account."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by storing the account id in the session instead of the email."
+     }
+    ],
+    "rationale": "",
+    "confidence": "medium",
+    "root_cause": "Sessions were stored against the old email address, so the next request found no matching account.",
+    "rejected_options": []
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-19",
+   "json": {
+    "people": [
+     "Elena Rossi"
+    ],
+    "ticket": "SHOP-19",
+    "actions": [
+     {
+      "what": "Built the export as a background job that emails a download link.",
+      "source": "comment by Elena Rossi"
+     }
+    ],
+    "gotchas": [
+     "Order history older than two years lives in archive tables, so the export must read both."
+    ],
+    "missing": [
+     "root_cause",
+     "rejected_options"
+    ],
+    "problem": "Customers can request a copy of their data, and requests must be answered within 30 days.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Customers can ask for a copy of their data. We have 30 days to respond."
+     },
+     {
+      "field": "actions",
+      "quote": "Built the export as a background job that emails a download link, because exports for large accounts take several minutes."
+     },
+     {
+      "field": "rationale",
+      "quote": "because exports for large accounts take several minutes."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: order history older than two years lives in archive tables, so the export must read both."
+     }
+    ],
+    "rationale": "Exports for large accounts take several minutes.",
+    "confidence": "medium",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-20",
+   "json": {
+    "people": [
+     "Aisha Khan"
+    ],
+    "ticket": "SHOP-20",
+    "actions": [
+     {
+      "what": "Put a connection pooler in front of the database.",
+      "source": "comment by Aisha Khan"
+     }
+    ],
+    "gotchas": [
+     "The pool size per instance must be smaller than the database connection limit divided by the maximum number of instances."
+    ],
+    "missing": [],
+    "problem": "During Black Friday's peak hour, about one in five requests returned 502 errors for twenty minutes.",
+    "related": [
+     "SHOP-7"
+    ],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "During the peak hour about one in five requests returned 502 for twenty minutes."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: the database ran out of connections because each web instance opened its own pool and the instance count tripled during autoscaling."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by putting a connection pooler in front of the database so total connections stay fixed however many instances run."
+     },
+     {
+      "field": "rationale",
+      "quote": "so total connections stay fixed however many instances run."
+     },
+     {
+      "field": "rejected_options",
+      "quote": "We rejected a larger database server because it would have cost more every month to fix a problem that only appears at peak."
+     },
+     {
+      "field": "gotchas",
+      "quote": "Gotcha: the pool size per instance must be smaller than the database connection limit divided by the maximum number of instances."
+     }
+    ],
+    "rationale": "Keep total database connections fixed regardless of how many web instances run.",
+    "confidence": "high",
+    "root_cause": "The database ran out of connections because each web instance opened its own pool and the instance count tripled during autoscaling.",
+    "rejected_options": [
+     {
+      "option": "A larger database server",
+      "why_rejected": "It would cost more every month to fix a problem that only appears at peak."
+     }
+    ]
+   },
+   "confidence": "high",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-23",
+   "json": {
+    "people": [
+     "Priya Nair"
+    ],
+    "ticket": "SHOP-23",
+    "actions": [
+     {
+      "what": "Shipped shareable wishlists using signed links.",
+      "source": "comment by Priya Nair"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "root_cause",
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "Customers need to share a wishlist with friends.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "Let customers share a wishlist with friends."
+     },
+     {
+      "field": "actions",
+      "quote": "Shipped using signed links."
+     }
+    ],
+    "rationale": "",
+    "confidence": "low",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "low",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-24",
+   "json": {
+    "people": [
+     "Marcus Lee"
+    ],
+    "ticket": "SHOP-24",
+    "actions": [
+     {
+      "what": "Fixed the typo.",
+      "source": "comment by Marcus Lee"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "root_cause",
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "The word 'received' was misspelled on the thank-you page.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "[SHOP-24] Typo on the thank-you page"
+     },
+     {
+      "field": "problem",
+      "quote": "The word 'received' was misspelled."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed."
+     }
+    ],
+    "rationale": "",
+    "confidence": "low",
+    "root_cause": "",
+    "rejected_options": []
+   },
+   "confidence": "low",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  },
+  {
+   "key": "SHOP-25",
+   "json": {
+    "people": [
+     "Elena Rossi"
+    ],
+    "ticket": "SHOP-25",
+    "actions": [
+     {
+      "what": "Trimmed and validated the promo code as plain letters and numbers only.",
+      "source": "comment by Elena Rossi"
+     }
+    ],
+    "gotchas": [],
+    "missing": [
+     "rationale",
+     "rejected_options",
+     "gotchas"
+    ],
+    "problem": "Pasting an emoji into the promo code box made the checkout page crash.",
+    "related": [],
+    "evidence": [
+     {
+      "field": "problem",
+      "quote": "The real problem: pasting an emoji into the promo code box made the checkout page crash."
+     },
+     {
+      "field": "root_cause",
+      "quote": "Root cause: the code length check counted bytes, not characters, and the validation regex threw on emoji."
+     },
+     {
+      "field": "actions",
+      "quote": "Fixed by trimming and validating the code as plain letters and numbers only."
+     }
+    ],
+    "rationale": "",
+    "confidence": "medium",
+    "root_cause": "The code length check counted bytes, not characters, and the validation regex threw on emoji.",
+    "rejected_options": []
+   },
+   "confidence": "medium",
+   "model": "gpt-6.1-sol",
+   "promptVersion": "v1",
+   "attempts": 1
+  }
+ ]
+}

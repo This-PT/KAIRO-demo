@@ -99,13 +99,17 @@ This runs the web app and the API **together in one container** (so only one thi
 
 ### 1. Check for secrets, then put the project on GitHub
 ```bash
-pnpm check:secrets      # must print OK: none of your secret values appear in files that would be uploaded
+pnpm check:secrets      # must print OK (see the note below)
 git init
 git add .
 git status              # .env must NOT be listed. If it is, stop.
 git commit -m "Handover demo"
 git branch -M main
 ```
+`check:secrets` looks for two things: your own secret values from `.env`, and strings that merely **look like real keys** (Stripe, GitHub, AWS, Slack, OpenAI, private-key blocks). The second matters because GitHub's push protection refuses a push containing anything shaped like a real key, even invented test data. That is why the demo data uses short fakes such as `sk_live_FAKEDEMO0001`.
+
+If you already committed before fixing this, redo the commit (safe while nothing has been pushed): `git add -A`, `git commit --amend --no-edit`.
+
 Create an empty **private** repository on github.com, then:
 ```bash
 git remote add origin https://github.com/YOUR-NAME/YOUR-REPO.git

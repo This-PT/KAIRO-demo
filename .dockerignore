@@ -1,0 +1,16 @@
+# Never copy secrets, caches, build output or local scratch into the image
+.env
+.env.*
+!.env.example
+**/node_modules
+**/.next
+**/.scratch-build
+.scratch
+.git
+**/*.log
+**/*.test.ts
+**/*.test.tsx
+vitest.config.ts
+vitest.setup.ts
+vitest.global-setup.ts
+docker-compose.yml

@@ -1,0 +1,1 @@
+{ "name": "@handover/connectors", "version": "0.0.0", "private": true, "type": "module", "main": "src/index.ts", "dependencies": { "@handover/core": "workspace:*" } }
