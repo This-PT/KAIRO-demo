@@ -22,6 +22,20 @@ export function withDemoDefaults(env: Env): Record<string, string | undefined> {
   return { DEMO_MODE: "true", DEMO_DATASET: "showcase", DEMO_READONLY: "true", DEMO_SEED: "true", CHAT_DAILY_LIMIT: "50", NODE_ENV: "production", ...set };
 }
 
+/**
+ * The API refuses to start with LLM_PROVIDER=openai and no key. For a deployment that would take the whole demo down,
+ * so a missing key (or model) switches chat to the offline provider instead, and says so in the log.
+ */
+export function resolveLlm(env: Env): { env: Env; notice: string | null } {
+  if ((env.LLM_PROVIDER ?? "").toLowerCase() !== "openai") return { env, notice: null };
+  const missing = [!env.OPENAI_API_KEY?.trim() && "OPENAI_API_KEY", !env.OPENAI_MODEL?.trim() && "OPENAI_MODEL"].filter(Boolean);
+  if (missing.length === 0) return { env, notice: null };
+  return {
+    env: { ...env, LLM_PROVIDER: "mock" },
+    notice: `${missing.join(" and ")} not set: Ask AI runs in offline mode (it quotes the closest ticket instead of writing an answer). Set ${missing.join(" and ")} in the service settings for real answers.`,
+  };
+}
+
 const definedOnly = (o: Env): Record<string, string> => Object.fromEntries(Object.entries(o).filter((e): e is [string, string] => e[1] !== undefined));
 
 /**
@@ -58,7 +72,9 @@ async function waitForApi(): Promise<void> {
 }
 
 async function main() {
-  const env = withDemoDefaults(process.env);
+  const llm = resolveLlm(withDemoDefaults(process.env));
+  const env = llm.env;
+  if (llm.notice) console.warn(`[start] ${llm.notice}`);
   const problems = checkEnv(env);
   if (problems.length) {
     console.error(`Cannot start:\n${problems.map((p) => `  - ${p}`).join("\n")}`);

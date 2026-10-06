@@ -58,3 +58,37 @@ describe("childEnvs", () => {
     expect(web.DATABASE_URL).toBeUndefined();
   });
 });
+
+import { resolveLlm } from "./render-start";
+
+describe("resolveLlm (a missing OpenAI key must not stop the deployment from starting)", () => {
+  it("keeps OpenAI when a key is present", () => {
+    const r = resolveLlm({ LLM_PROVIDER: "openai", OPENAI_API_KEY: "sk-test-1234567890abcdef", OPENAI_MODEL: "m" });
+    expect(r.env.LLM_PROVIDER).toBe("openai");
+    expect(r.notice).toBeNull();
+  });
+  it("falls back to the offline provider when the key is missing or blank, and says so", () => {
+    for (const key of [undefined, "", "   "]) {
+      const r = resolveLlm({ LLM_PROVIDER: "openai", OPENAI_API_KEY: key });
+      expect(r.env.LLM_PROVIDER).toBe("mock");
+      expect(r.notice).toMatch(/OPENAI_API_KEY/);
+      expect(r.notice).toMatch(/offline/i);
+    }
+  });
+  it("falls back when the model name is missing too", () => {
+    const r = resolveLlm({ LLM_PROVIDER: "openai", OPENAI_API_KEY: "sk-test-1234567890abcdef", OPENAI_MODEL: "" });
+    expect(r.env.LLM_PROVIDER).toBe("mock");
+    expect(r.notice).toMatch(/OPENAI_MODEL/);
+  });
+  it("leaves other providers alone", () => {
+    expect(resolveLlm({ LLM_PROVIDER: "mock" }).env.LLM_PROVIDER).toBe("mock");
+    expect(resolveLlm({ LLM_PROVIDER: "anthropic", ANTHROPIC_API_KEY: "k", ANTHROPIC_MODEL: "m" }).env.LLM_PROVIDER).toBe("anthropic");
+  });
+  it("treats an unset provider as the offline default", () => {
+    expect(resolveLlm({}).notice).toBeNull();
+  });
+  it("never puts the key in the notice and does not change other settings", () => {
+    const r = resolveLlm({ LLM_PROVIDER: "openai", OPENAI_API_KEY: "", ADMIN_TOKEN: "keepme-1234567890" });
+    expect(r.env.ADMIN_TOKEN).toBe("keepme-1234567890");
+  });
+});
