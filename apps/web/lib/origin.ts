@@ -5,6 +5,11 @@
  * A browser always sends Origin on cross-site posts and a page on another site cannot set these headers.
  */
 export function sameOrigin(request: Request): boolean {
+  // Browsers state where a request came from in Sec-Fetch-Site. Pages cannot forge or remove it, and it stays correct when
+  // Origin is "null" (which browsers send on form posts under Referrer-Policy: no-referrer).
+  const site = request.headers.get("sec-fetch-site");
+  if (site) return site === "same-origin";
+
   const origin = request.headers.get("origin");
   if (!origin) return true; // non-browser clients
   try {

@@ -19,7 +19,8 @@
     "demo:showcase": "dotenv -- tsx apps/api/src/demo-cli.ts --showcase --reset",
     "demo:start": "tsx scripts/demo-start.ts",
     "demo:export": "dotenv -- tsx apps/api/src/export-cli.ts",
-    "check:secrets": "tsx scripts/check-secrets.ts"
+    "check:secrets": "tsx scripts/check-secrets.ts",
+    "check:site": "node scripts/check-site.mjs"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

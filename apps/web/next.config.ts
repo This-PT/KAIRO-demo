@@ -13,7 +13,9 @@ const config: NextConfig = {
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "Referrer-Policy", value: "no-referrer" },
+          // Not "no-referrer": that makes browsers send Origin: null on form posts, which breaks sign-in.
+          // "same-origin" still sends no referrer to other sites.
+          { key: "Referrer-Policy", value: "same-origin" },
         ],
       },
     ];

@@ -120,3 +120,19 @@ describe("global limit (spoofed client addresses)", () => {
     expect((await attempt("2.2.2.2", env.appPassword)).status).toBe(429);
   });
 });
+
+describe("login from a real browser (Origin: null + Sec-Fetch-Site: same-origin)", () => {
+  it("signs in", async () => {
+    const r = await login({ password: env.appPassword }, { headers: { origin: "null", "sec-fetch-site": "same-origin" } });
+    expect(r.status).toBe(303);
+    expect(cookie(r)).toContain(SESSION_COOKIE);
+  });
+  it("still refuses a cross-site form post", async () => {
+    const r = await login({ password: env.appPassword }, { headers: { origin: "null", "sec-fetch-site": "cross-site" } });
+    expect(r.status).toBe(403);
+  });
+  it("logs out", async () => {
+    const r = await handleLogout(new Request("http://localhost:3000/api/logout", { method: "POST", headers: { origin: "null", "sec-fetch-site": "same-origin" } }));
+    expect(r.status).toBe(303);
+  });
+});

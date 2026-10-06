@@ -5,3 +5,4 @@ dist
 *.log
 .scratch
 .scratch-build
+*.tsbuildinfo

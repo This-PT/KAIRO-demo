@@ -58,3 +58,25 @@ describe("publicOrigin", () => {
     expect(get("http://localhost:3000/x", { "x-forwarded-proto": "https, http" })).toBe("https://localhost:3000");
   });
 });
+
+describe("sameOrigin with Sec-Fetch-Site (what real browsers send)", () => {
+  const post = (headers: Record<string, string>) => new Request("http://0.0.0.0:10000/api/login", { method: "POST", headers });
+
+  it("accepts a same-origin post even when the browser sends Origin: null (it does under Referrer-Policy: no-referrer)", () => {
+    expect(sameOrigin(post({ origin: "null", "sec-fetch-site": "same-origin" }))).toBe(true);
+  });
+  it("accepts a same-origin post with no Origin at all", () => {
+    expect(sameOrigin(post({ "sec-fetch-site": "same-origin" }))).toBe(true);
+  });
+  it("rejects cross-site and same-site (other subdomain) posts, whatever Origin says", () => {
+    expect(sameOrigin(post({ origin: "https://evil.example", "sec-fetch-site": "cross-site" }))).toBe(false);
+    expect(sameOrigin(post({ origin: "https://app.demo.onrender.com", "sec-fetch-site": "same-site", host: "demo.onrender.com" }))).toBe(false);
+    expect(sameOrigin(post({ origin: "https://demo.onrender.com", "sec-fetch-site": "cross-site", host: "demo.onrender.com" }))).toBe(false);
+  });
+  it("does not accept 'none' for a post", () => {
+    expect(sameOrigin(post({ "sec-fetch-site": "none" }))).toBe(false);
+  });
+  it("without Sec-Fetch-Site (older clients) an Origin of null is still rejected", () => {
+    expect(sameOrigin(post({ origin: "null" }))).toBe(false);
+  });
+});

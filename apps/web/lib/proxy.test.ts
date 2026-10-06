@@ -75,6 +75,20 @@ describe("handleProxy", () => {
     expect(blocked.status).toBe(403);
   });
 
+  it("accepts a real browser's same-origin write (Origin: null + Sec-Fetch-Site: same-origin) but not a cross-site one", async () => {
+    const fetchFn = vi.fn(async () => new Response("{}", { status: 200, headers: { "content-type": "application/json" } }));
+    const run = (site: string) =>
+      handleProxy({
+        request: new Request("http://0.0.0.0:10000/api/proxy/chat", { method: "POST", headers: { "x-requested-with": "handover", origin: "null", "sec-fetch-site": site, "content-type": "application/json" }, body: "{}" }),
+        segments: ["chat"],
+        apiUrl: API,
+        token: TOKEN,
+        fetchFn: fetchFn as unknown as typeof fetch,
+      });
+    expect((await run("same-origin")).status).toBe(200);
+    expect((await run("cross-site")).status).toBe(403);
+  });
+
   it("does not require the CSRF header for GET", async () => expect((await setup().run("GET", ["projects"])).status).toBe(200));
 
   it.each([[".."], ["."], ["a/b"], ["%2e%2e"], [""], ["a b"], ["a\\b"]])("rejects the path segment %j", async (seg) => {

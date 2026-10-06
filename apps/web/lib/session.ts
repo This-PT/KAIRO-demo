@@ -44,3 +44,9 @@ export async function verifySessionToken(token: string | undefined, secret: stri
   if (exp < now || exp > now + SESSION_TTL_MS + 60_000) return false;
   return timingEqual(mac, await hmac(secret, expiry));
 }
+
+/** Whether to show the signed-in parts of the page. Open (true) when no password is configured, as in local development. */
+export async function isSignedIn(cookieValue: string | undefined, env: { APP_PASSWORD?: string; ADMIN_TOKEN?: string }, now = Date.now()): Promise<boolean> {
+  if (!env.APP_PASSWORD) return true;
+  return verifySessionToken(cookieValue, await deriveSecret(env.ADMIN_TOKEN ?? "", env.APP_PASSWORD), now);
+}

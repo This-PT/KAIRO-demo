@@ -56,3 +56,28 @@ describe("deriveSecret", () => {
     expect(await verifySessionToken(t, await deriveSecret("tok", "new-password"), NOW)).toBe(false);
   });
 });
+
+import { isSignedIn } from "./session";
+
+describe("isSignedIn (decides whether the menu is shown)", () => {
+  const env = { APP_PASSWORD: "demo-password-1", ADMIN_TOKEN: "admin-token-1234567890" };
+  const tokenFor = async (pw: string) => createSessionToken(await deriveSecret(env.ADMIN_TOKEN, pw), NOW);
+
+  it("is true when no password is configured (local development is open)", async () => {
+    expect(await isSignedIn(undefined, { ADMIN_TOKEN: env.ADMIN_TOKEN }, NOW)).toBe(true);
+    expect(await isSignedIn(undefined, { APP_PASSWORD: "", ADMIN_TOKEN: env.ADMIN_TOKEN }, NOW)).toBe(true);
+  });
+  it("is false for a visitor without a session when a password is configured", async () => {
+    expect(await isSignedIn(undefined, env, NOW)).toBe(false);
+    expect(await isSignedIn("", env, NOW)).toBe(false);
+  });
+  it("is true for a valid session", async () => {
+    expect(await isSignedIn(await tokenFor(env.APP_PASSWORD), env, NOW + 1000)).toBe(true);
+  });
+  it("is false for an expired, forged or other-password session", async () => {
+    const t = await tokenFor(env.APP_PASSWORD);
+    expect(await isSignedIn(t, env, NOW + SESSION_TTL_MS + 5000)).toBe(false);
+    expect(await isSignedIn(await tokenFor("another-password"), env, NOW + 1000)).toBe(false);
+    expect(await isSignedIn(t.slice(0, -2) + "00", env, NOW + 1000)).toBe(false);
+  });
+});
