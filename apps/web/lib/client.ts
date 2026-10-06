@@ -3,7 +3,7 @@ export async function callApi<T = unknown>(method: "GET" | "POST" | "PUT" | "PAT
   const res = await fetch(`/api/proxy/${path}`, {
     method,
     // Only declare JSON when a body is sent: the API rejects an empty body that claims to be JSON.
-    headers: body === undefined ? { "x-requested-with": "handover" } : { "content-type": "application/json", "x-requested-with": "handover" },
+    headers: body === undefined ? { "x-requested-with": "kairo" } : { "content-type": "application/json", "x-requested-with": "kairo" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const data = (await res.json().catch(() => null)) as { error?: string } | null;

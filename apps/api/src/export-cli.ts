@@ -1,6 +1,6 @@
 import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { prisma } from "@handover/db";
+import { prisma } from "@kairo/db";
 import { exportSummaries } from "./seed";
 
 const out = fileURLToPath(new URL("../../../fixtures/showcase-summaries.json", import.meta.url));

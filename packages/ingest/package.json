@@ -1,1 +1,1 @@
-{ "name": "@handover/ingest", "version": "0.0.0", "private": true, "type": "module", "main": "src/index.ts", "dependencies": { "@handover/core": "workspace:*", "@handover/policy": "workspace:*", "@handover/db": "workspace:*", "@handover/connectors": "workspace:*" } }
+{ "name": "@kairo/ingest", "version": "0.0.0", "private": true, "type": "module", "main": "src/index.ts", "dependencies": { "@kairo/core": "workspace:*", "@kairo/policy": "workspace:*", "@kairo/db": "workspace:*", "@kairo/connectors": "workspace:*" } }

@@ -1,4 +1,4 @@
-import type { NormalizedTicket, Visibility } from "@handover/core";
+import type { NormalizedTicket, Visibility } from "@kairo/core";
 import { redact, type RedactionEvent } from "./redact";
 
 export interface Rule {

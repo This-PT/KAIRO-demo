@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import type { Summary } from "@handover/core";
+import type { Summary } from "@kairo/core";
 import { SourceLink } from "./SourceLink";
 import { SourceText } from "./SourceText";
 import { SummaryView } from "./SummaryView";

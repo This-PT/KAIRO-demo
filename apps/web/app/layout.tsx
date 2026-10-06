@@ -5,7 +5,7 @@ import { apiGet } from "@/lib/api";
 import { SESSION_COOKIE, isSignedIn } from "@/lib/session";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "Handover", description: "Keep team knowledge when developers leave." };
+export const metadata: Metadata = { title: "Kairo", description: "Keep team knowledge when developers leave." };
 
 const NAV = [
   { href: "/history", label: "Task History" },
@@ -35,7 +35,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         {readOnly && <div className="bg-amber-100 px-4 py-1.5 text-center text-xs text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">Read-only demo with fake data. You can browse and ask questions; changes are disabled.</div>}
         <header className="border-b border-zinc-200 dark:border-zinc-800">
           <nav className="mx-auto flex max-w-5xl items-center gap-6 px-4 py-3">
-            <span className="font-semibold">Handover</span>
+            <span className="font-semibold">Kairo</span>
             {signedIn &&
               NAV.map((n) => (
                 <a key={n.href} href={n.href} className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100">

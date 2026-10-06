@@ -28,7 +28,7 @@ export async function handleProxy(i: ProxyInput): Promise<Response> {
   if (!METHODS.has(method)) return json(405, { error: "method not allowed" });
 
   if (method !== "GET") {
-    if (i.request.headers.get("x-requested-with") !== "handover") return json(403, { error: "forbidden" });
+    if (i.request.headers.get("x-requested-with") !== "kairo") return json(403, { error: "forbidden" });
     if (!sameOrigin(i.request)) return json(403, { error: "forbidden" });
   }
 

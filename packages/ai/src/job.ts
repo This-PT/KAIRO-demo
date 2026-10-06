@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import type { Prisma, PrismaClient } from "@handover/db";
-import { redact } from "@handover/policy";
+import type { Prisma, PrismaClient } from "@kairo/db";
+import { redact } from "@kairo/policy";
 import { PROMPT_VERSION } from "./prompt";
 import { summaryToSearchText } from "./search";
 import type { LlmProvider } from "./provider";

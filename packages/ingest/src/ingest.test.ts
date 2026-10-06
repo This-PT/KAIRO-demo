@@ -1,8 +1,8 @@
 import { randomBytes } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { prisma } from "@handover/db";
-import { FixtureConnector } from "@handover/connectors";
-import type { Rule } from "@handover/policy";
+import { prisma } from "@kairo/db";
+import { FixtureConnector } from "@kairo/connectors";
+import type { Rule } from "@kairo/policy";
 import { decrypt } from "./crypto";
 import { ingestProject } from "./ingest";
 
@@ -28,7 +28,7 @@ async function wipe() {
 beforeAll(async () => {
   await wipe();
   const conn = await prisma.connection.create({ data: { baseUrl: "fixtures" } });
-  projectId = (await prisma.project.create({ data: { key: "HND", name: "Handover Demo", connectionId: conn.id, enabled: true } })).id;
+  projectId = (await prisma.project.create({ data: { key: "HND", name: "Kairo Demo", connectionId: conn.id, enabled: true } })).id;
 });
 afterAll(async () => {
   await wipe();

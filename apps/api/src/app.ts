@@ -1,9 +1,9 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import cors from "@fastify/cors";
-import { answerQuestion, type LlmProvider } from "@handover/ai";
-import type { Connector } from "@handover/connectors";
-import type { PrismaClient } from "@handover/db";
-import { redact } from "@handover/policy";
+import { answerQuestion, type LlmProvider } from "@kairo/ai";
+import type { Connector } from "@kairo/connectors";
+import type { PrismaClient } from "@kairo/db";
+import { redact } from "@kairo/policy";
 import Fastify, { type FastifyInstance } from "fastify";
 import { z } from "zod";
 import type { ConnectionInfo } from "./config";

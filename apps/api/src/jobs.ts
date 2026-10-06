@@ -1,7 +1,7 @@
-import { summarizeStoredTicket, type LlmProvider } from "@handover/ai";
-import type { Connector } from "@handover/connectors";
-import type { PrismaClient } from "@handover/db";
-import { ingestProject } from "@handover/ingest";
+import { summarizeStoredTicket, type LlmProvider } from "@kairo/ai";
+import type { Connector } from "@kairo/connectors";
+import type { PrismaClient } from "@kairo/db";
+import { ingestProject } from "@kairo/ingest";
 
 export interface IngestDeps {
   db: PrismaClient;

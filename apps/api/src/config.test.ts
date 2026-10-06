@@ -66,7 +66,7 @@ describe("demo dataset", () => {
     expect(r.info).toEqual({ mode: "demo", baseUrl: "fixtures" });
   });
   it("demo mode serves the basic project by default", async () => {
-    expect(await createConnector({ demoMode: true }, {}).connector.listProjects()).toEqual([{ key: "HND", name: "Handover Demo" }]);
+    expect(await createConnector({ demoMode: true }, {}).connector.listProjects()).toEqual([{ key: "HND", name: "Kairo Demo" }]);
   });
 });
 

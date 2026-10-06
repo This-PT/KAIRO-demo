@@ -1,7 +1,7 @@
-import { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@handover/core";
+import { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@kairo/core";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
-export { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@handover/core";
+export { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@kairo/core";
 
 /** JSON Schema handed to the LLM: strict object, all properties required, no $ref. */
 export const summaryJsonSchema: Record<string, unknown> = (() => {

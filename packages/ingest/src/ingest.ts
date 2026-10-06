@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
-import { renderTicketText } from "@handover/core";
-import type { Connector } from "@handover/connectors";
-import { Prisma, type PrismaClient } from "@handover/db";
-import { applyPolicy, type Rule } from "@handover/policy";
+import { renderTicketText } from "@kairo/core";
+import type { Connector } from "@kairo/connectors";
+import { Prisma, type PrismaClient } from "@kairo/db";
+import { applyPolicy, type Rule } from "@kairo/policy";
 import { encrypt } from "./crypto";
 
 export interface IngestOptions {

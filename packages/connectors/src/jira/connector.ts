@@ -1,4 +1,4 @@
-import type { NormalizedTicket } from "@handover/core";
+import type { NormalizedTicket } from "@kairo/core";
 import type { Connector, ProjectInfo, TicketPage } from "../types";
 import { adfToText } from "./adf";
 import type { JiraClient } from "./client";

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { NormalizedTicket, renderTicketText } from "@handover/core";
+import { NormalizedTicket, renderTicketText } from "@kairo/core";
 import { InvalidJsonError, type LlmProvider, type LlmRequest } from "./provider";
 import { summarizeTicket, type AuditSink } from "./summarize";
 import { hnd1Summary } from "./testdata";

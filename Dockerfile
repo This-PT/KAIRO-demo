@@ -13,8 +13,8 @@ WORKDIR /app
 # Install with dev dependencies too: the API runs TypeScript directly through tsx.
 COPY . .
 RUN pnpm install --frozen-lockfile --prod=false \
- && pnpm --filter @handover/db exec prisma generate \
- && pnpm --filter @handover/web build
+ && pnpm --filter @kairo/db exec prisma generate \
+ && pnpm --filter @kairo/web build
 
 ENV NODE_ENV=production
 EXPOSE 10000

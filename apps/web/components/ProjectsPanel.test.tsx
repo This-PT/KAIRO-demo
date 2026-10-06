@@ -5,7 +5,7 @@ import { ProjectsPanel } from "./ProjectsPanel";
 
 afterEach(cleanup);
 
-const projects = [{ key: "HND", name: "Handover Demo", enabled: true, ticketCount: 10 }];
+const projects = [{ key: "HND", name: "Kairo Demo", enabled: true, ticketCount: 10 }];
 const buttons = () => screen.getAllByRole("button") as HTMLButtonElement[];
 
 describe("ProjectsPanel", () => {

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { NormalizedTicket } from "@handover/core";
+import { NormalizedTicket } from "@kairo/core";
 import { FixtureConnector } from "./fixtures";
 
 const dir = join(__dirname, "../../../fixtures/showcase");
@@ -14,7 +14,7 @@ describe("showcase connector", () => {
   const c = FixtureConnector.showcase();
   it("exposes the Shopfront project and leaves the default fixtures alone", async () => {
     expect(await c.listProjects()).toEqual([{ key: "SHOP", name: "Shopfront" }]);
-    expect(await new FixtureConnector().listProjects()).toEqual([{ key: "HND", name: "Handover Demo" }]);
+    expect(await new FixtureConnector().listProjects()).toEqual([{ key: "HND", name: "Kairo Demo" }]);
   });
   it("pages through every ticket", async () => {
     const p1 = await c.fetchIssues("SHOP", null, 10);

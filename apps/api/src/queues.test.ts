@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
 import IORedis from "ioredis";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { HeuristicProvider } from "@handover/ai";
-import { FixtureConnector } from "@handover/connectors";
-import { prisma, wipeProject } from "@handover/db";
+import { HeuristicProvider } from "@kairo/ai";
+import { FixtureConnector } from "@kairo/connectors";
+import { prisma, wipeProject } from "@kairo/db";
 import { createQueues, startWorkers, type Workers } from "./queues";
 
 const redis = new IORedis(process.env.REDIS_URL ?? "redis://localhost:6379", { maxRetriesPerRequest: null });
@@ -24,7 +24,7 @@ async function waitFor<T>(fn: () => Promise<T | false>, ms = 15000): Promise<T> 
 beforeAll(async () => {
   await wipeProject(prisma, "HND");
   const conn = await prisma.connection.create({ data: { baseUrl: "fixtures" } });
-  const p = await prisma.project.create({ data: { key: "HND", name: "Handover Demo", connectionId: conn.id, enabled: true } });
+  const p = await prisma.project.create({ data: { key: "HND", name: "Kairo Demo", connectionId: conn.id, enabled: true } });
   await prisma.policyRule.createMany({
     data: [
       { projectId: p.id, label: null, visibility: "readable" },

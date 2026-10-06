@@ -19,7 +19,7 @@ const setup = (resp: Response | Error = new Response(JSON.stringify({ ok: 1 }), 
     });
   return { fetchFn, run };
 };
-const csrf = { "x-requested-with": "handover", origin: "http://localhost:3000", "content-type": "application/json" };
+const csrf = { "x-requested-with": "kairo", origin: "http://localhost:3000", "content-type": "application/json" };
 
 describe("handleProxy", () => {
   it("forwards GETs with the server-side token and the query string", async () => {
@@ -56,7 +56,7 @@ describe("handleProxy", () => {
     const res = await handleProxy({
       request: new Request("http://0.0.0.0:10000/api/proxy/chat", {
         method: "POST",
-        headers: { "x-requested-with": "handover", origin: "https://demo.onrender.com", "x-forwarded-host": "demo.onrender.com", "content-type": "application/json" },
+        headers: { "x-requested-with": "kairo", origin: "https://demo.onrender.com", "x-forwarded-host": "demo.onrender.com", "content-type": "application/json" },
         body: "{}",
       }),
       segments: ["chat"],
@@ -66,7 +66,7 @@ describe("handleProxy", () => {
     });
     expect(res.status).toBe(200);
     const blocked = await handleProxy({
-      request: new Request("http://0.0.0.0:10000/api/proxy/chat", { method: "POST", headers: { "x-requested-with": "handover", origin: "https://evil.example", "x-forwarded-host": "demo.onrender.com" }, body: "{}" }),
+      request: new Request("http://0.0.0.0:10000/api/proxy/chat", { method: "POST", headers: { "x-requested-with": "kairo", origin: "https://evil.example", "x-forwarded-host": "demo.onrender.com" }, body: "{}" }),
       segments: ["chat"],
       apiUrl: API,
       token: TOKEN,
@@ -79,7 +79,7 @@ describe("handleProxy", () => {
     const fetchFn = vi.fn(async () => new Response("{}", { status: 200, headers: { "content-type": "application/json" } }));
     const run = (site: string) =>
       handleProxy({
-        request: new Request("http://0.0.0.0:10000/api/proxy/chat", { method: "POST", headers: { "x-requested-with": "handover", origin: "null", "sec-fetch-site": site, "content-type": "application/json" }, body: "{}" }),
+        request: new Request("http://0.0.0.0:10000/api/proxy/chat", { method: "POST", headers: { "x-requested-with": "kairo", origin: "null", "sec-fetch-site": site, "content-type": "application/json" }, body: "{}" }),
         segments: ["chat"],
         apiUrl: API,
         token: TOKEN,

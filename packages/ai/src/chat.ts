@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
-import type { PrismaClient } from "@handover/db";
-import { redact } from "@handover/policy";
+import type { PrismaClient } from "@kairo/db";
+import { redact } from "@kairo/policy";
 import { buildChatPrompt, type ChatTurn } from "./chat-prompt";
 import { chatJsonSchema, validateChatAnswer, verifyCitations, type Citation } from "./chat-verify";
 import { InvalidJsonError, type LlmProvider } from "./provider";

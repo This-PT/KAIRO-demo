@@ -1,4 +1,4 @@
-import type { NormalizedTicket } from "@handover/core";
+import type { NormalizedTicket } from "@kairo/core";
 
 export interface ProjectInfo {
   key: string;

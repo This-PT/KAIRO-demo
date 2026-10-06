@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { NormalizedTicket, renderTicketText } from "@handover/core";
+import { NormalizedTicket, renderTicketText } from "@kairo/core";
 import { capConfidence, resolveOutcome, verifyEvidence } from "./verify";
 import { hnd1Summary } from "./testdata";
 

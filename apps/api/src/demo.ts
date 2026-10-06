@@ -1,7 +1,7 @@
-import { summarizeStoredTicket, type LlmProvider } from "@handover/ai";
-import { FixtureConnector, type Connector } from "@handover/connectors";
-import { wipeProject, type PrismaClient } from "@handover/db";
-import { ingestProject, type IngestResult } from "@handover/ingest";
+import { summarizeStoredTicket, type LlmProvider } from "@kairo/ai";
+import { FixtureConnector, type Connector } from "@kairo/connectors";
+import { wipeProject, type PrismaClient } from "@kairo/db";
+import { ingestProject, type IngestResult } from "@kairo/ingest";
 
 export type DemoDataset = "basic" | "showcase";
 
@@ -23,7 +23,7 @@ export interface DemoResult {
 }
 
 export const DATASETS: Record<DemoDataset, { key: string; name: string; connector: () => Connector; restrictedLabels: string[] }> = {
-  basic: { key: "HND", name: "Handover Demo", connector: () => new FixtureConnector(), restrictedLabels: ["hr-confidential"] },
+  basic: { key: "HND", name: "Kairo Demo", connector: () => new FixtureConnector(), restrictedLabels: ["hr-confidential"] },
   showcase: { key: "SHOP", name: "Shopfront", connector: () => FixtureConnector.showcase(), restrictedLabels: ["hr-confidential"] },
 };
 

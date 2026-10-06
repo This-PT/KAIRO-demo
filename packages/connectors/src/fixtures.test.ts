@@ -3,7 +3,7 @@ import { FixtureConnector } from "./fixtures";
 
 describe("FixtureConnector", () => {
   const c = new FixtureConnector();
-  it("lists the HND project", async () => expect(await c.listProjects()).toEqual([{ key: "HND", name: "Handover Demo" }]));
+  it("lists the HND project", async () => expect(await c.listProjects()).toEqual([{ key: "HND", name: "Kairo Demo" }]));
   it("returns all fixture tickets in pages", async () => {
     const p1 = await c.fetchIssues("HND", null, 5);
     expect(p1.tickets).toHaveLength(5);

@@ -1,6 +1,6 @@
-# Handover
+# Kairo
 
-Handover keeps a team's knowledge when developers leave. It reads Jira tickets (comments, changelog, linked issues) and turns each one into a structured record: **problem, root cause, what was done, rationale, rejected options and gotchas**, each backed by a quote from the ticket. A new hire can read the history instead of reverse-engineering it.
+Kairo keeps a team's knowledge when developers leave. It reads Jira tickets (comments, changelog, linked issues) and turns each one into a structured record: **problem, root cause, what was done, rationale, rejected options and gotchas**, each backed by a quote from the ticket. A new hire can read the history instead of reverse-engineering it.
 
 This repository is **Phase 1**. See [What is not built yet](#what-is-not-built-yet).
 
@@ -57,10 +57,10 @@ Good questions to try: "Why did we choose Elasticsearch instead of Algolia?", "H
 
 ## Connect to real Jira
 
-Handover uses a Jira Cloud API token with your email (HTTP Basic auth). OAuth is planned for a later phase.
+Kairo uses a Jira Cloud API token with your email (HTTP Basic auth). OAuth is planned for a later phase.
 
 1. Sign in to Atlassian and open **https://id.atlassian.com/manage-profile/security/api-tokens**.
-2. Click **Create API token**, give it a name such as `handover`, choose an expiry, and **copy the token**. Atlassian shows it only once.
+2. Click **Create API token**, give it a name such as `kairo`, choose an expiry, and **copy the token**. Atlassian shows it only once.
 3. Edit `.env`:
    ```
    DEMO_MODE=false
@@ -87,7 +87,7 @@ Set `LLM_PROVIDER` in `.env`, then restart `pnpm api`.
 | `openai` + `OPENAI_BASE_URL` | same, plus the URL | Any OpenAI-compatible server (Gemini, Groq, local Ollama...). Free tiers exist; check their data terms before sending real tickets. |
 | `anthropic` | `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL` (for example `claude-opus-5-5`) | Uses the official SDK with structured output. |
 
-You choose the model name; Handover does not hard-code one. Real providers are billed by the provider per token. **Only redacted text of readable tickets is ever sent**, and each request is recorded in the audit log.
+You choose the model name; Kairo does not hard-code one. Real providers are billed by the provider per token. **Only redacted text of readable tickets is ever sent**, and each request is recorded in the audit log.
 
 To try a provider without Jira: set the provider variables, then run `pnpm demo --reset`. This sends the redacted fake tickets to that provider.
 
@@ -103,7 +103,7 @@ pnpm check:secrets      # must print OK (see the note below)
 git init
 git add .
 git status              # .env must NOT be listed. If it is, stop.
-git commit -m "Handover demo"
+git commit -m "Kairo demo"
 git branch -M main
 ```
 `check:secrets` looks for two things: your own secret values from `.env`, and strings that merely **look like real keys** (Stripe, GitHub, AWS, Slack, OpenAI, private-key blocks). The second matters because GitHub's push protection refuses a push containing anything shaped like a real key, even invented test data. That is why the demo data uses short fakes such as `sk_live_FAKEDEMO0001`.

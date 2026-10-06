@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { HeuristicProvider, summarizeStoredTicket, type LlmProvider } from "@handover/ai";
-import { FixtureConnector } from "@handover/connectors";
-import { prisma, wipeProject } from "@handover/db";
+import { HeuristicProvider, summarizeStoredTicket, type LlmProvider } from "@kairo/ai";
+import { FixtureConnector } from "@kairo/connectors";
+import { prisma, wipeProject } from "@kairo/db";
 import { buildApp } from "./app";
 import { processIngest } from "./jobs";
 
@@ -40,7 +40,7 @@ beforeAll(async () => {
   await prisma.chatSession.deleteMany();
   await prisma.auditLog.deleteMany({ where: { kind: "chat" } });
   const conn = await prisma.connection.create({ data: { baseUrl: "fixtures" } });
-  const p = await prisma.project.create({ data: { key: "HND", name: "Handover Demo", connectionId: conn.id, enabled: true } });
+  const p = await prisma.project.create({ data: { key: "HND", name: "Kairo Demo", connectionId: conn.id, enabled: true } });
   await prisma.policyRule.createMany({
     data: [
       { projectId: p.id, label: null, visibility: "readable" },

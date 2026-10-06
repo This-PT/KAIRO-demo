@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import type { NormalizedTicket } from "@handover/core";
+import type { NormalizedTicket } from "@kairo/core";
 import { applyPolicy, evaluateVisibility, type Rule } from "./policy";
 
 const load = (k: string): NormalizedTicket =>

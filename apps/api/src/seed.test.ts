@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { HeuristicProvider, searchTickets } from "@handover/ai";
-import { prisma, wipeProject } from "@handover/db";
+import { HeuristicProvider, searchTickets } from "@kairo/ai";
+import { prisma, wipeProject } from "@kairo/db";
 import { runDemo } from "./demo";
 import { exportSummaries, seedIfEmpty, seedShowcase, type SummaryExport } from "./seed";
 

@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { HeuristicProvider, type LlmProvider } from "@handover/ai";
-import { prisma, wipeProject } from "@handover/db";
+import { HeuristicProvider, type LlmProvider } from "@kairo/ai";
+import { prisma, wipeProject } from "@kairo/db";
 import { runDemo } from "./demo";
 
 const key = randomBytes(32).toString("base64");

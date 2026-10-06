@@ -1,4 +1,4 @@
-import { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@handover/core";
+import { CONTENT_FIELDS, SummarySchema, type ContentField, type Summary } from "@kairo/core";
 
 export const FIELD_LABELS: Record<ContentField, string> = {
   problem: "Problem",

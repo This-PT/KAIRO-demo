@@ -19,7 +19,7 @@ if (!BROWSER) {
   process.exit(2);
 }
 const PORT = 9335;
-const edge = spawn(BROWSER, ["--headless=new", "--disable-gpu", `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), "handover-check-"))}`, "--remote-allow-origins=*", "--no-first-run", "--window-size=1300,900", "about:blank"], { stdio: "ignore" });
+const edge = spawn(BROWSER, ["--headless=new", "--disable-gpu", `--remote-debugging-port=${PORT}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), "kairo-check-"))}`, "--remote-allow-origins=*", "--no-first-run", "--window-size=1300,900", "about:blank"], { stdio: "ignore" });
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 let target;

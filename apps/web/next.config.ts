@@ -4,7 +4,7 @@ const config: NextConfig = {
   // `next dev` and `next build` must not share a folder: a build overwrites the running dev server's files.
   // Verification builds set NEXT_DIST_DIR (for example .scratch-build); normal runs keep .next.
   distDir: process.env.NEXT_DIST_DIR || ".next",
-  transpilePackages: ["@handover/core"],
+  transpilePackages: ["@kairo/core"],
   poweredByHeader: false,
   async headers() {
     return [

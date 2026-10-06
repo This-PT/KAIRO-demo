@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { HeuristicProvider, summarizeStoredTicket } from "@handover/ai";
-import { FixtureConnector } from "@handover/connectors";
-import { prisma, wipeProject } from "@handover/db";
+import { HeuristicProvider, summarizeStoredTicket } from "@kairo/ai";
+import { FixtureConnector } from "@kairo/connectors";
+import { prisma, wipeProject } from "@kairo/db";
 import { buildApp, type JobQueues } from "./app";
 import { processIngest } from "./jobs";
 
@@ -73,7 +73,7 @@ describe("connection", () => {
   it("tests the connection by listing projects", async () => {
     const r = await send("POST", "/api/connection/test");
     expect(r.statusCode).toBe(200);
-    expect(r.json()).toEqual({ ok: true, projects: [{ key: "HND", name: "Handover Demo" }] });
+    expect(r.json()).toEqual({ ok: true, projects: [{ key: "HND", name: "Kairo Demo" }] });
   });
 });
 

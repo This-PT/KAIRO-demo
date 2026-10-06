@@ -52,7 +52,7 @@ describe("PolicyEditor", () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("/api/proxy/projects/HND/rules");
     expect(init.method).toBe("PUT");
-    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("handover");
+    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("kairo");
     expect(JSON.parse(init.body as string)).toEqual({
       rules: [
         { label: null, visibility: "readable" },

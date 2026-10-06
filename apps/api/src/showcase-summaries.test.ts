@@ -1,10 +1,10 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { validateSummary, verifyEvidence } from "@handover/ai";
-import { FixtureConnector } from "@handover/connectors";
-import { renderTicketText } from "@handover/core";
-import { applyPolicy } from "@handover/policy";
+import { validateSummary, verifyEvidence } from "@kairo/ai";
+import { FixtureConnector } from "@kairo/connectors";
+import { renderTicketText } from "@kairo/core";
+import { applyPolicy } from "@kairo/policy";
 import type { SummaryExport } from "./seed";
 
 const file = fileURLToPath(new URL("../../../fixtures/showcase-summaries.json", import.meta.url));

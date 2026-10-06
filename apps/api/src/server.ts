@@ -1,5 +1,5 @@
-import { createProvider } from "@handover/ai";
-import { prisma } from "@handover/db";
+import { createProvider } from "@kairo/ai";
+import { prisma } from "@kairo/db";
 import IORedis from "ioredis";
 import { buildApp } from "./app";
 import { createConnector, loadConfig } from "./config";
@@ -36,7 +36,7 @@ const app = await buildApp({
 await app.listen({ host: "127.0.0.1", port: config.port });
 if (config.readOnly) console.log("READ-ONLY demo mode: writes are disabled; chat is limited.");
 if (!redis) console.log("No Redis configured: background jobs are disabled.");
-console.log(`Handover API on http://127.0.0.1:${config.port} (source: ${info.mode}, llm: ${provider.name}/${provider.model})`);
+console.log(`Kairo API on http://127.0.0.1:${config.port} (source: ${info.mode}, llm: ${provider.name}/${provider.model})`);
 
 for (const sig of ["SIGINT", "SIGTERM"] as const) {
   process.on(sig, async () => {

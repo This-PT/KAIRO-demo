@@ -1,6 +1,6 @@
-import { SummarySchema, type Summary } from "@handover/core";
-import type { PrismaClient } from "@handover/db";
-import { redact } from "@handover/policy";
+import { SummarySchema, type Summary } from "@kairo/core";
+import type { PrismaClient } from "@kairo/db";
+import { redact } from "@kairo/policy";
 
 const KEY_RE = /\b[A-Za-z][A-Za-z0-9]+-\d+\b/g;
 const MAX_TERMS = 12;

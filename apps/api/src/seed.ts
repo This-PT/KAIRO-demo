@@ -1,6 +1,6 @@
-import { SummarySchema, summaryToSearchText, verifyEvidence } from "@handover/ai";
-import type { Prisma, PrismaClient } from "@handover/db";
-import { ingestProject, type IngestResult } from "@handover/ingest";
+import { SummarySchema, summaryToSearchText, verifyEvidence } from "@kairo/ai";
+import type { Prisma, PrismaClient } from "@kairo/db";
+import { ingestProject, type IngestResult } from "@kairo/ingest";
 import { DATASETS } from "./demo";
 
 /** Summaries written by an AI model earlier, stored in the repository so a deployment needs no AI calls. */

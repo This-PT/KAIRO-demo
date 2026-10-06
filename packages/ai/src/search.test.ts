@@ -1,9 +1,9 @@
 import { randomBytes } from "node:crypto";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { prisma, wipeProject } from "@handover/db";
-import { FixtureConnector } from "@handover/connectors";
-import { ingestProject } from "@handover/ingest";
-import type { Rule } from "@handover/policy";
+import { prisma, wipeProject } from "@kairo/db";
+import { FixtureConnector } from "@kairo/connectors";
+import { ingestProject } from "@kairo/ingest";
+import type { Rule } from "@kairo/policy";
 import { summarizeStoredTicket } from "./job";
 import type { LlmProvider } from "./provider";
 import { HeuristicProvider } from "./providers/heuristic";
@@ -62,7 +62,7 @@ const provider: LlmProvider = {
 beforeAll(async () => {
   await wipeProject(prisma, "HND");
   const conn = await prisma.connection.create({ data: { baseUrl: "fixtures" } });
-  await prisma.project.create({ data: { key: "HND", name: "Handover Demo", connectionId: conn.id, enabled: true } });
+  await prisma.project.create({ data: { key: "HND", name: "Kairo Demo", connectionId: conn.id, enabled: true } });
   await ingestProject({ connector: new FixtureConnector(), db: prisma, projectKey: "HND", rules, encryptionKey: randomBytes(32).toString("base64"), enqueueSummarize: async () => {} });
   for (const k of ["HND-1", "HND-2", "HND-3", "HND-4", "HND-5", "HND-7", "HND-8", "HND-9", "HND-10"]) await summarizeStoredTicket({ db: prisma, provider, ticketKey: k });
 });

@@ -55,7 +55,7 @@ describe("Chat", () => {
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("/api/proxy/chat");
     expect(init.method).toBe("POST");
-    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("handover");
+    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("kairo");
     expect(JSON.parse(init.body as string)).toEqual({ message: "Why was Redis rejected?" });
     expect(document.body.textContent).toContain("Why was Redis rejected?");
     expect(input().value).toBe("");

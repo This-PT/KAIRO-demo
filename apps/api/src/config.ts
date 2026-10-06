@@ -1,4 +1,4 @@
-import { FixtureConnector, JiraClient, JiraConnector, type Connector } from "@handover/connectors";
+import { FixtureConnector, JiraClient, JiraConnector, type Connector } from "@kairo/connectors";
 
 type Env = Record<string, string | undefined>;
 

@@ -1,6 +1,6 @@
 // Web Crypto only, so this runs in the Edge middleware as well as in route handlers.
 
-export const SESSION_COOKIE = "handover_session";
+export const SESSION_COOKIE = "kairo_session";
 export const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 
 const enc = new TextEncoder();
@@ -24,7 +24,7 @@ export function timingEqual(a: string, b: string): boolean {
  * Changing the password or the admin token invalidates every existing session.
  */
 export async function deriveSecret(adminToken: string, appPassword: string): Promise<string> {
-  return hex(await crypto.subtle.digest("SHA-256", enc.encode(`handover-session|${adminToken}|${appPassword}`)));
+  return hex(await crypto.subtle.digest("SHA-256", enc.encode(`kairo-session|${adminToken}|${appPassword}`)));
 }
 
 /** Token format: `<expiry-ms>.<hmac(expiry)>`. Stateless: nothing is stored on the server. */

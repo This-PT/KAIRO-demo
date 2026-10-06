@@ -16,7 +16,7 @@ describe("callApi", () => {
     await callApi("GET", "projects");
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
     expect(url).toBe("/api/proxy/projects");
-    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("handover");
+    expect((init.headers as Record<string, string>)["x-requested-with"]).toBe("kairo");
   });
 
   it("does NOT send a JSON content-type when there is no body (the API rejects empty JSON bodies)", async () => {

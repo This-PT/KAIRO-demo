@@ -1,6 +1,6 @@
 // Web Crypto only, so this also runs in the Edge middleware.
 
-export const VISITOR_COOKIE = "handover_visitor";
+export const VISITOR_COOKIE = "kairo_visitor";
 export const VISITOR_HEADER = "x-visitor-id";
 
 const RE = /^[a-f0-9]{32}$/;

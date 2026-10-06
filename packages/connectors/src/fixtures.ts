@@ -1,14 +1,14 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { NormalizedTicket } from "@handover/core";
+import { NormalizedTicket } from "@kairo/core";
 import type { Connector, ProjectInfo, TicketPage } from "./types";
 
 /** Serves fake tickets from a folder so everything runs without credentials. */
 export class FixtureConnector implements Connector {
   constructor(
     private readonly dir = fileURLToPath(new URL("../../../fixtures/jira", import.meta.url)),
-    private readonly project: ProjectInfo = { key: "HND", name: "Handover Demo" },
+    private readonly project: ProjectInfo = { key: "HND", name: "Kairo Demo" },
   ) {}
 
   /** The larger "Shopfront" demo team (see fixtures/showcase). */

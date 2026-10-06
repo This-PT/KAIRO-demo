@@ -5,7 +5,7 @@ import { testDatabaseUrl } from "./scripts/test-db";
 export default function setup() {
   const base = process.env.DATABASE_URL;
   if (!base) return; // the per-file guard explains how to run the tests
-  execFileSync("pnpm", ["--filter", "@handover/db", "exec", "prisma", "migrate", "deploy"], {
+  execFileSync("pnpm", ["--filter", "@kairo/db", "exec", "prisma", "migrate", "deploy"], {
     env: { ...process.env, DATABASE_URL: testDatabaseUrl(base) },
     stdio: "pipe",
     shell: true,

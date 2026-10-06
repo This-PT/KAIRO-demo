@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { CONTENT_FIELDS, groupEvidence, FIELD_LABELS } from "@/lib/format";
-import type { Summary } from "@handover/core";
+import type { Summary } from "@kairo/core";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (

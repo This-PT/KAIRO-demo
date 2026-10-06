@@ -23,7 +23,7 @@ export default async function Home() {
       <section className="space-y-3">
         <h1 className="text-3xl font-semibold">Keep what your team knows when people leave</h1>
         <p className="max-w-2xl text-zinc-600 dark:text-zinc-400">
-          Handover reads your tickets and keeps the reasoning that usually disappears: why a decision was made, what was tried and rejected, and what to watch out for. A new teammate can read it, or just ask.
+          Kairo reads your tickets and keeps the reasoning that usually disappears: why a decision was made, what was tried and rejected, and what to watch out for. A new teammate can read it, or just ask.
         </p>
         <p className="text-sm text-zinc-500">
           {tickets.total > 0 ? (

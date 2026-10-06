@@ -1,5 +1,5 @@
-import { createProvider } from "@handover/ai";
-import { prisma } from "@handover/db";
+import { createProvider } from "@kairo/ai";
+import { prisma } from "@kairo/db";
 import { runDemo } from "./demo";
 
 const encryptionKey = process.env.ENCRYPTION_KEY;
@@ -9,7 +9,7 @@ if (!encryptionKey) {
 }
 
 const provider = createProvider();
-console.log(`Handover demo on fixture tickets (summarizer: ${provider.name}/${provider.model})`);
+console.log(`Kairo demo on fixture tickets (summarizer: ${provider.name}/${provider.model})`);
 if (provider.name !== "heuristic") console.log("Note: the redacted text of the fake fixture tickets will be sent to this provider.");
 
 const dataset = process.argv.includes("--showcase") ? "showcase" : "basic";

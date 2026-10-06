@@ -1,6 +1,6 @@
-import { ProviderRefusalError, type LlmProvider } from "@handover/ai";
-import type { Connector } from "@handover/connectors";
-import type { PrismaClient } from "@handover/db";
+import { ProviderRefusalError, type LlmProvider } from "@kairo/ai";
+import type { Connector } from "@kairo/connectors";
+import type { PrismaClient } from "@kairo/db";
 import { Queue, UnrecoverableError, Worker } from "bullmq";
 import type IORedis from "ioredis";
 import type { JobQueues } from "./app";
@@ -8,7 +8,7 @@ import { processIngest, processSummarize } from "./jobs";
 
 export type Queues = JobQueues & { close(): Promise<void>; obliterate(): Promise<void> };
 
-export function createQueues(redis: IORedis, prefix = "handover"): Queues {
+export function createQueues(redis: IORedis, prefix = "kairo"): Queues {
   const ingest = new Queue("ingest", { connection: redis, prefix });
   const summarize = new Queue("summarize", { connection: redis, prefix });
   return {
@@ -54,7 +54,7 @@ export interface Workers {
 }
 
 export function startWorkers(o: WorkerOptions): Workers {
-  const common = { connection: o.redis, prefix: o.prefix ?? "handover" };
+  const common = { connection: o.redis, prefix: o.prefix ?? "kairo" };
 
   const ingest = new Worker(
     "ingest",

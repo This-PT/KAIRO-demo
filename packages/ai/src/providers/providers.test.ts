@@ -6,7 +6,7 @@ import { HeuristicProvider } from "./heuristic";
 import { createProvider } from "./index";
 import { validateSummary } from "../schema";
 import { verifyEvidence } from "../verify";
-import { renderTicketText, NormalizedTicket } from "@handover/core";
+import { renderTicketText, NormalizedTicket } from "@kairo/core";
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
